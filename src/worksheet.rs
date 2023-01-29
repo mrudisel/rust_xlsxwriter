@@ -505,8 +505,8 @@ impl Worksheet {
     /// # }
     /// ```
     ///
-    pub fn name(&self) -> String {
-        self.name.clone()
+    pub fn name(&self) -> &str {
+        &self.name
     }
 
     /// Write a formatted number to a worksheet cell.
