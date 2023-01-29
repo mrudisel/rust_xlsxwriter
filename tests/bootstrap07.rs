@@ -28,7 +28,7 @@ fn create_new_xlsx_file_1(filename: &str) -> Result<(), XlsxError> {
 fn create_new_xlsx_file_2(filename: &str) -> Result<(), XlsxError> {
     let mut workbook = Workbook::new();
     let worksheet = workbook.add_worksheet();
-    let name = worksheet.name();
+    let name = worksheet.name().to_owned();
 
     // Test incremental save.
     worksheet.write_string_only(0, 0, "Hello")?;
