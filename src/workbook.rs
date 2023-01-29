@@ -513,7 +513,7 @@ impl Workbook {
     /// # }
     /// ```
     ///
-    pub fn worksheets(&mut self) -> &Vec<Worksheet> {
+    pub fn worksheets(&self) -> &Vec<Worksheet> {
         &self.worksheets
     }
 
