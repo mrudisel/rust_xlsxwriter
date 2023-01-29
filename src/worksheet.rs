@@ -437,34 +437,35 @@ impl Worksheet {
     /// [Microsoft Office documentation]:
     ///     https://support.office.com/en-ie/article/rename-a-worksheet-3f1f7148-ee83-404d-8ef0-9ff99fbad1f9
     ///
-    pub fn set_name(&mut self, name: &str) -> Result<&mut Worksheet, XlsxError> {
-        // Check that the sheet name isn't blank.
-        if name.is_empty() {
-            return Err(XlsxError::SheetnameCannotBeBlank);
+    pub fn set_name<S>(&mut self, name: S) -> Result<&mut Worksheet, XlsxError>
+    where
+        S: Into<String>,
+    {
+        fn validate_name(name: String) -> Result<String, XlsxError> {
+            // Check that the sheet name isn't blank.
+            if name.is_empty() {
+                return Err(XlsxError::SheetnameCannotBeBlank);
+            }
+
+            // Check that sheet sheetname is <= 31, an Excel limit.
+            if name.chars().count() > 31 {
+                return Err(XlsxError::SheetnameLengthExceeded(name));
+            }
+
+            // Check that sheetname doesn't contain any invalid characters.
+            if name.contains(['[', ']', ':', '*', '?', '/', '\\']) {
+                return Err(XlsxError::SheetnameContainsInvalidCharacter(name));
+            }
+
+            // Check that sheetname doesn't start or end with an apostrophe.
+            if name.starts_with('\'') || name.ends_with('\'') {
+                return Err(XlsxError::SheetnameStartsOrEndsWithApostrophe(name));
+            }
+
+            Ok(name)
         }
 
-        // Check that sheet sheetname is <= 31, an Excel limit.
-        if name.chars().count() > 31 {
-            return Err(XlsxError::SheetnameLengthExceeded(name.to_string()));
-        }
-
-        // Check that sheetname doesn't contain any invalid characters.
-        let re = Regex::new(r"[\[\]:*?/\\]").unwrap();
-        if re.is_match(name) {
-            return Err(XlsxError::SheetnameContainsInvalidCharacter(
-                name.to_string(),
-            ));
-        }
-
-        // Check that sheetname doesn't start or end with an apostrophe.
-        if name.starts_with('\'') || name.ends_with('\'') {
-            return Err(XlsxError::SheetnameStartsOrEndsWithApostrophe(
-                name.to_string(),
-            ));
-        }
-
-        self.name = name.to_string();
-
+        self.name = validate_name(name.into())?;
         Ok(self)
     }
 
