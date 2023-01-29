@@ -240,7 +240,7 @@ impl Workbook {
         let name = format!("Sheet{}", self.worksheets.len() + 1);
 
         let mut worksheet = Worksheet::new();
-        worksheet.set_name(&name).unwrap();
+        worksheet.set_name(name).unwrap();
 
         self.worksheets.push(worksheet);
         let worksheet = self.worksheets.last_mut().unwrap();
@@ -576,7 +576,7 @@ impl Workbook {
     pub fn push_worksheet(&mut self, mut worksheet: Worksheet) {
         if worksheet.name().is_empty() {
             let name = format!("Sheet{}", self.worksheets.len() + 1);
-            worksheet.set_name(&name).unwrap();
+            worksheet.set_name(name).unwrap();
         }
 
         self.worksheets.push(worksheet);
